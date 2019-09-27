@@ -1,0 +1,128 @@
+/* ==========================================================================
+** Hero Card Styles
+** 20/08/2019
+** Alan Medina Silva
+** ========================================================================== */
+
+/* 
+body {
+    background: #f0f5f9;
+    color: #000;
+    display: grid;
+    font-family: "Raleway", sans-serif;
+    height: 100vh;
+    place-items: center;
+    width: 100vw;
+    -webkit-perspective: 500px;
+            perspective: 500px;
+  } */
+
+.card {
+    box-shadow: 10px 20px 30px rgba(0, 0, 0, 0.2);
+    background: #ffffff;
+    border-radius: 10px;
+    margin: 2rem;
+    max-width: 800px;
+    min-height: 400px;
+    padding: 1.5rem 2.5rem;
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    -webkit-transform-style: preserve-3d;
+    transform-style: preserve-3d;
+    transition: ease 1s;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+
+
+/* 
+.card:after {
+    content: "";
+    display: block;
+    width: 260px;
+    height: 260px;
+    background: #f4f7f7;
+    border-radius: 100%;
+    position: absolute;
+    right: -20px;
+    bottom: -80px;
+    z-index: -1;
+} */
+
+.card header {
+    align-items: flex-start;
+    display: flex;
+    justify-content: space-between;
+    height: auto;
+}
+
+
+
+.card-title {
+    margin-bottom: 20px;
+    word-break: break-all;
+    text-align: justify;
+}
+
+.cardBorder {
+    width: 100%;
+    border-top: 1px solid #7a7c80;
+    padding: 10px;
+}
+
+.card img {
+    border-radius: 6px;
+    width: 200px;
+    height: auto;
+}
+
+.card h1 {
+    font-weight: 700;
+    margin: 0 0 1rem;
+}
+
+.card h3 {
+    font-weight: 400;
+    margin: 0;
+}
+
+.card nav {
+    align-items: center;
+    bottom: 40px;
+    display: flex;
+    justify-content: space-between;
+    left: 40px;
+    position: absolute;
+}
+
+.card nav ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+.card nav ul li {
+    display: table-row;
+}
+
+.card nav ul a {
+    display: table-cell;
+    text-decoration: none;
+    color: #535c68;
+    padding: 0.3rem 2.5rem;
+}
+
+.cardBottom {
+    display: flex;
+    flex-direction: column;
+    margin-top: auto;
+}
+
+
+.cardButtonContainer {
+    display: flex;
+    justify-content: flex-end;
+}   

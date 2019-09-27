@@ -1,0 +1,254 @@
+/* ==========================================================================
+** QnA Styles
+** 19/03/2019
+** Alan Medina Silva
+** ========================================================================== */
+
+
+.bot-qnaRow {
+    border-bottom: 1px solid #e6e6e6;
+    padding: 15px 0;
+}
+
+
+.bot-questionContainer {
+    display: -webkit-inline-box;
+    display: -ms-inline-flexbox;
+    display: inline-flex;
+    border: 1px solid #B3DBF2 !important;
+    border-radius: 2px;
+    margin: 4px 8px 4px 0px;
+    min-height: 32px;
+}
+
+.bot-newQuestionContainer {
+    margin-bottom: 23px;
+    border-top: 1px solid #eee;
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+
+}
+
+.bot-questionEdit, .bot-questionAdd {
+    display: inline-block;
+    border: none;
+    cursor: pointer;
+    padding: 4px 6px 4px 12px;
+    min-height: 20px;
+    font-size: 15px;
+    line-height: 24px;
+    word-break: break-word;
+}
+
+
+.bot-questionAdd  {
+    position: relative;
+    min-width: 250px;
+    width: 250px;
+}
+
+.bot-questionAdd input {
+    /* width: 600px; */
+    width: 100%;
+    border: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    padding: 15px;
+    min-width: 250px;
+}
+
+textarea.bot-qnaEditableAnswer{
+    
+    width: 100%;
+    resize: none;
+    outline: none;
+    width: 100% !important;
+    margin: -10px;
+    min-height: 140px;
+    max-height: 50ch !important;
+    
+    /* position: absolute; */
+    top: 0;
+    left: 0;
+    
+    border-color:  #0078d4 !important;
+    
+    overflow:auto;
+    padding:10px;
+    display:block;
+}
+
+.bot-questionEdit:hover, .bot-cancelButtonQuestion:hover  {
+    background-color: #B3DBF2;
+}
+
+.bot-cancelButtonQuestion {
+    padding: 4px 8px 4px 8px;
+    display: inline-block;
+    color: #0078d4;
+    font-size: 13px;
+    line-height: 20px;
+    cursor: pointer;
+}
+
+
+.bot-qnaAnswerContainer {
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+    justify-content: space-between;
+}
+
+.bot-deleteButton {
+    display: flex;
+    margin-left: auto;
+}
+
+.bot-qnaAnswerContainer p {
+    word-break: break-word;
+}
+
+
+
+
+.bot-saveQuestionsContainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+
+.bot-emptyError {
+    border-left : 10px solid red;
+}
+
+
+.bot-newQuestion {
+    border-left : 10px solid #6BB700;
+}
+
+
+.bot-followUpsContainer {
+    display: flex;
+    align-items: flex-start;
+    flex-direction: column;
+}
+
+span.bot-questionText {
+    font-size: 16px;
+}
+
+
+
+/* ==========================================================================
+** Card Creator
+** ========================================================================== */
+
+.form-group.bot-formItem {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.bot-shadow {
+    box-shadow: -5px 4px 49px -5px rgba(0,0,0,.75);
+}
+
+.bot-cardContainer {
+    border-radius: 3px 3px 0 0;
+    padding: 20px;
+    min-width: 550px;
+    min-height: 630px;
+    margin-bottom: 80px;
+}
+
+.bot-cardHeader {
+    /* padding: 5px; */
+    border-bottom: 1px solid #ededed;
+}
+
+
+.bot-cardBody {
+    padding: 10px;
+}
+
+.bot-imageContainer {
+    width: 100%;
+    max-width: 400px;
+}
+
+.bot-imageContainer img {
+    width: 100%;
+}
+
+.col-md-6.bot-addHeroQuestionsContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.bot-editQuestionItemContainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    flex-flow: wrap;
+    align-items: center;
+}
+
+.bot-formInfoContainer {
+    max-width : 95%;
+}
+
+.bot-formInfo {
+    margin-bottom: 20px;
+}
+
+.bot-newFollowForm textarea {
+    width : 100%;
+}
+
+
+.bot-formButtonsContainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+}
+
+.bot-questionsResultContainer {
+    width: 100%;
+    margin-bottom: 15px;
+}
+
+.bot-questionsResultContainer h6{
+    margin-top: 15px;
+    padding: 0 20px;
+ }
+
+
+ul.bot-answerResultList {
+    list-style: none;
+    width: 100%;
+    height: 150px;
+    overflow: hidden auto;
+    padding: 20px;
+    
+}
+
+
+
+li.bot-answerResultItem {
+    cursor: pointer;
+    padding: 5px 0px 5px 5px;
+    transition: all ease .6;
+}
+
+li.bot-answerResultItem:hover, li.bot-answerResultItem.selected {
+    background-color: rgb(0%,47.1%,83.1%,0.6);
+    color: #fff;
+    
+
+}

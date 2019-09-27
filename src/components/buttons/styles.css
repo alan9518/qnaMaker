@@ -1,0 +1,165 @@
+/* ==========================================================================
+** Buttons Styles 
+** 28/01/2019
+** Alan Medina Silva
+** ========================================================================== */
+
+
+/* ---------------------------------------------------
+** App Buttons
+** --------------------------------------------------- */
+
+
+button {
+    -webkit-box-shadow: 0 2px 5px 0 rgba(0,0,0,.16), 0 2px 10px 0 rgba(0,0,0,.12);
+    box-shadow: 0 2px 5px 0 rgba(0,0,0,.16), 0 2px 10px 0 rgba(0,0,0,.12);
+    padding: .84rem 2.14rem;
+    font-size: .81rem;
+    -webkit-transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,-webkit-box-shadow .15s ease-in-out;
+    transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,-webkit-box-shadow .15s ease-in-out;
+    -o-transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+    transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+    transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out,-webkit-box-shadow .15s ease-in-out;
+    margin: .375rem;
+    border: 0;
+    border-radius: .125rem;
+    cursor: pointer;
+    text-transform: uppercase;
+    white-space: normal;
+    word-wrap: break-word;
+    color: #fff;
+}
+
+.bot-appButtonContainer {
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    width: 100%;
+    text-align: center;
+    cursor: pointer;
+}
+
+
+span.bot-buttonText {
+    color: #fff;
+    font-size: 1.5em;
+    font-family: tex_gyre_adventorregular;
+}
+
+.bot-appButtonContainer.bot-cancelButton {
+    background-color: #333333;
+} 
+
+.bot-appButtonContainer.bot-saveButton {
+    background-color: #8d8d8d;
+} 
+
+.bot-appButtonContainer.bot-continueButton {
+    background-color: #009add;
+}
+
+
+/* ---------------------------------------------------
+** AddInputs Button
+** --------------------------------------------------- */
+
+fa.fa-plus.fa-w-14 {
+    color: #009add;
+}
+
+
+.bot-singleButton {
+    background-color: initial;
+    border: 2px solid #009add;
+    padding: 10px 16px;
+    font-size: 12px;
+    color: #009add;
+    cursor: pointer;
+    margin: 0 5px;
+    min-width: 140px;
+    text-align: center;
+    transition: .5s ease all;
+}
+
+/* .bot-singleButton:hover {
+    background-color: #009add;
+    color: #fff;
+    border: 2px solid #fff;
+} */
+
+.bot-singleButton span.bot-buttonText {
+    color: #009add;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+
+.bot-smallButton {
+    width: 250px;
+    overflow: hidden;
+    text-align: center;
+}
+
+
+/* .bot-singleButton {
+    background-color: transparent;
+    border: 2px solid #009add;
+    padding: 10px 16px;
+    font-size: 12px;
+    color: #009add;
+    cursor: pointer;
+} */
+
+.bot-singleButton:hover{
+    background-color: #009add;
+    
+    border: 2px solid #fff;
+    
+}
+
+.bot-singleButton:hover span.bot-buttonText {
+    color: #fff;
+}
+
+.bot-singleButtonDanger {
+    background-color: transparent;
+    border: 2px solid #d23338;
+    padding: 10px 16px;
+    font-size: 12px;
+    color: #d23338;
+    cursor: pointer;
+}
+
+.bot-singleButtonDanger:hover{
+    background-color: #d23338;
+    color: #fff;
+    border: 2px solid #fff;
+}
+
+
+.bot-add-prompt-button {
+    cursor: pointer;
+    display: -webkit-inline-box;
+    display: -ms-inline-flexbox;
+    display: inline-flex;
+}
+
+
+.bot-add-new-metadata, .bot-add-new-question, .bot-add-new-prompt {
+    color: #767676;
+    font-size: 14px;
+    line-height: 20px;
+    -ms-flex-item-align: center;
+    align-self: center;
+    cursor: pointer;
+}
+
+.bot-add-prompt-label, .bot-add-alternative-label, .bot-add-metadata-label {
+    margin-left: 8px;
+    display: inline;
+    color: #767676;
+    font-family: "Segoe UI";
+    font-size: 14px;
+    letter-spacing: 0.3px;
+    line-height: 20px;
+}

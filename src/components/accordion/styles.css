@@ -1,0 +1,85 @@
+/* ==========================================================================
+ * Accordion Styles 
+ * 18/06/2018
+ * Alan Medina Silva
+ ========================================================================== */
+.bot-separatorTitle {
+    display: -ms-flexbox;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    padding: 10px 15px;
+    transition: 0.4s;
+    /* background-color: #F2F2F2; */
+    background-color: #393939;
+}
+
+.bot-tabContent {
+    padding: 0 18px;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease;
+}
+
+.bot-tabTitle {
+    /* color: #2c304d; */
+    color: #ffffff;
+    font-weight: 400;
+    font-size: 22px;
+}
+
+.bot-itemsCount  {
+    margin-left: auto;
+    font-size: 16px;
+}
+
+
+
+/* ==========================================================================
+ * Collpapsible Styles 
+ * 21/06/2018
+ * Alan Medina Silva
+ ========================================================================== */
+
+
+
+.bot-panelHeading {
+    display: -ms-flexbox;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    transition: 0.4s;
+}
+
+.bot-panel , .bot-panelHeading{
+    cursor: pointer;
+    width: 100%;
+}
+
+.bot-panel .bot-panelCollapse {
+    overflow: hidden;
+    transition: height 0.3s ease-out;
+}
+
+.bot-panel .bot-panelBody {
+    padding: 0 18px;
+    border: none !important;
+}
+
+
+i.material-icons.bot-closedArrow.flexGrow0 {
+    color: #fff;
+}
+
+
+
+@media screen and (max-width: 800px) {
+    .bot-tabContent {
+        padding: 0 5px;
+        
+    }
+  }

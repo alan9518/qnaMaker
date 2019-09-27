@@ -1,22 +1,153 @@
-.App {
-  text-align: center;
+/* ==========================================================================
+** General Layouts Styles
+** 13/03/2019
+** Alan Medina Silva
+** ========================================================================== */
+
+/* ---------------------------------------------------
+** Body Styles
+** --------------------------------------------------- */
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
-.App-logo {
-  height: 40vmin;
-}
-
-.App-header {
-  background-color: #282c34;
+html, body, .App {
+  width: 100%;
+  height: 100%;
   min-height: 100vh;
+  /* background-color: #edf1f5; */
+  background-color: #ffffff;
+}
+
+.App {
+  display: -ms-flexbox;
+  display: flex;
+  flex-direction: row;
+  /* background-color: #edf1f5; */
+}
+
+.bot-mainContainer {
+  width: 100%;
+  padding: 20px;
+  height: 100%;
+  overflow-y: auto;
+  /* background-color: #edf1f5; */
+}
+
+h1, h2, h3, h4, h5, h6, thead {
+  font-family: tex_gyre_adventorregular;
+  font-weight: 700;
+}
+
+p, label, tbody {
+  font-family: tex_gyre_adventorregular;
+}
+
+input, textarea {
+  /* font-family: 'Asap', sans-serif; */
+  font-family: tex_gyre_adventorregular;
+  font-weight: 400;
+  font-size: 16px;
+}
+
+a {
+  text-decoration: none;
+}
+
+a:active {
+  text-decoration: none;
+}
+
+a:-webkit-any-link {
+  color: -webkit-link;
+  cursor: poboter;
+  text-decoration: none;
+}
+
+.bot-fullWidth {
+  width: 100% !important;
+}
+
+.bot-blueText {
+  color: #0099dd;
+}
+
+.shadow-z-1 {
+  -webkit-box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.12), 0 1px 2px 0 rgba(0, 0, 0, 0.24);
+  -moz-box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.12), 0 1px 2px 0 rgba(0, 0, 0, 0.24);
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.12), 0 1px 2px 0 rgba(0, 0, 0, 0.24);
+}
+
+.bot-separator {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  width: 10px;
+  /* min-height: 600px; */
+  background-color: #0099dd;
+}
+
+.bot-bottomSeparator {
+  border-bottom: 3px solid #f4f4f4;
+}
+
+.bot-col-separator {
+  border-left: 3px solid #f4f4f4;
+}
+
+.bot-shadow {
+  /* box-shadow: 0 1px 15px 1px rgba(52, 40, 104, .08); */
+  -webkit-box-shadow: -5px 4px 49px -5px rgba(0, 0, 0, 0.75);
+  -moz-box-shadow: -5px 4px 49px -5px rgba(0, 0, 0, 0.75);
+  box-shadow: -5px 4px 49px -5px rgba(0, 0, 0, 0.75);
+}
+
+.bot-linkText a {
+  color: #009add;
+  font-weight: 700;
+}
+
+.bot-container {
+  width: 100%;
+}
+
+.bot-row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+.bot-row:first-child {
+  flex-grow: 2
+}
+
+.bot-column {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  flex-basis: 100%;
+  flex: 1;
 }
 
-.App-link {
-  color: #09d3ac;
+.bot-double-column {
+  display: flex;
+  flex-direction: column;
+  flex-basis: 100%;
+  flex: 2;
+}
+
+.bot-errorStatus {
+  border: 1px solid #d23338 !important;
+}
+
+@media screen and (min-width: 800px) {
+  .bot-column {
+    flex: 1
+  }
+  .bot-double-column {
+    flex: 2
+  }
 }

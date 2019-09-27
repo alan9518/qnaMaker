@@ -1,0 +1,28 @@
+/* ==========================================================================
+** Pagination Styles
+** 19/03/2019
+** Alan Medina Silva
+** ========================================================================== */
+
+ul.bot-pagination {
+    display: flex;
+    flex-direction: row;
+    margin: 0;
+    /* justify-content: flex-end; */
+    /* margin: 20px 0; */
+}
+
+
+li.bot-page-item {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #eee;
+    border-radius: 2px;
+    padding: 10px;
+    margin: 2px;
+    cursor: pointer;
+}
+
+li.bot-page-item:hover {
+    border-color: #009add;
+}
