@@ -30,36 +30,6 @@ class App extends Component {
 
 
   // --------------------------------------
-  // Load SP Context
-  // -------------------------------------- 
-  async componentDidMount() {
-    sp.setup({
-      sp: {
-        headers: {
-          Accept: "application/json;odata=verbose",
-        },
-        baseUrl: process.env.REACT_APP_SP_STATIC_PATH
-      },
-    });
-    
-    const w = await sp.web.get();
-    console.log("TCL: App -> componentDidMount -> w", w)
-
-    const user = await sp.utility.getCurrentUserEmailAddresses();
-    console.log("TCL: App -> componentDidMount -> user", user)
-
-    sp.web.lists.getByTitle("qnaLegal").items.get().then((items) => {
-      console.log(items);
-    }).catch(error => console.log('error', error));
-    
-    
-  }
-
-
-
- 
-
-  // --------------------------------------
   // Render App
   // --------------------------------------
   renderApp () { 

@@ -80,7 +80,12 @@
 // Define PropTypes 
 // -------------------------------------- 
     NewQuestionInput.propTypes = {
-        props: PropTypes
+        isAnswer: PropTypes.bool,
+        resizeInput : PropTypes.func, 
+        onKeyPress : PropTypes.func, 
+        questionValue : PropTypes.string, 
+        onBlur : PropTypes.func, 
+        index : PropTypes.number, 
     };
 
 // --------------------------------------

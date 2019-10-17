@@ -31,7 +31,49 @@
       work correctly both with client-side routing and a non-root public URL.
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
-    <title>React App</title>
+      <!--Remove Sharepoint Styles -->
+  <style>
+    .modal-backdrop {
+      display: none
+    }
+
+    #flexFooter,
+    #s4-ribbonrow,
+    div#s4-titlerow,
+    div#sideNavBox,
+    span#DeltaSPWebPartManager,
+    span#DeltaDelegateControls,
+    #DeltaPageInstrumentation,
+    #DeltaHelpPanel,
+    #DeltaPlaceHolderUtilityContent {
+      display: none !important
+    }
+
+    #contentBox {
+      margin-right: 0 !important;
+      margin-left: 0 !important;
+      width: 100% !important
+    }
+
+    #contentRow {
+      padding-top: 0
+    }
+
+    #s4-bodyContainer {
+      padding-bottom: 0 !important
+    }
+
+    #containerParallax {
+      padding-left: 0 !important;
+      padding-right: 0 !important
+    }
+
+    .container .jumbotron,
+    .container-fluid .jumbotron {
+      border-radius: 0 !important
+    }
+  </style>
+    <title>Flex QnA Maker</title>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>

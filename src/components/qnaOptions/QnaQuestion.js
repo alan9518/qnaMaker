@@ -18,7 +18,7 @@
         
         
         return (
-            <div className = "bot-questionContainer"  name = {name} id ={id} key = {props.id}>
+            <div className = "bot-questionContainer"  name = {name} >
                 <div className="bot-questionEdit" onDoubleClick = {onQuestionDoubleClick}>
                     
                     {
@@ -46,7 +46,7 @@
                             event-action="Delete question" 
                             event-category="Knowledgebase table" role="button" tabIndex="0">
 
-                            <i className="material-icons" id = {question} onClick = {props.onQuestionRemoved}>close</i>
+                           {allowEdition && <i className="material-icons" id = {question} onClick = {props.onQuestionRemoved}>close</i>}
                         </span>
                     }
                 </div>
@@ -60,7 +60,7 @@
 // -------------------------------------- 
     QnaQuestion.propTypes = {
         question : PropTypes.string,
-        id : PropTypes.string,
+        // id : PropTypes.number,
         newQuestionValue : PropTypes.string,
         editQuestion : PropTypes.bool,
         onQuestionDoubleClick : PropTypes.func,

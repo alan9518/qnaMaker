@@ -221,6 +221,7 @@
                             question = {question} 
                             onQuestionRemoved = {this.removeQuestionArrayItem} 
                             id = {index} 
+                            key = {`newQuestion-${question}-${index}`}
                         />
                     })
                 }
@@ -251,6 +252,7 @@
                                     containerWidth = {this.state.questionContainerWidth}
                                     index = {1}
                                     onKeyPress={this.handleKeyPressQuestion}
+                                    
                                 />
 
                                 
@@ -315,7 +317,10 @@
 // Define PropTypes 
 // -------------------------------------- 
     NewQnaQuestion.propTypes = {
-        props: PropTypes
+        questions: PropTypes.array,
+        saveQuestionPair : PropTypes.func,
+        showAnswer : PropTypes.bool,
+        onRemoveItem : PropTypes.func
     };
 // --------------------------------------
 // Export Component

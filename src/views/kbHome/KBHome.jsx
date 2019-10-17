@@ -16,7 +16,6 @@
     import Alert from 'react-s-alert';
     import 'react-s-alert/dist/s-alert-default.css';
     import 'react-s-alert/dist/s-alert-css-effects/slide.css';
-    import PropTypes from 'prop-types';
 
 // --------------------------------------
 // Create Component Class
@@ -144,67 +143,87 @@
             //? --------------------------------------
             saveNewQuestions = async () => {
                 const { add, update } = this.state;
-                
                 const deleteArray = this.state.delete;
                 
 
-                // this.setState({
-                //     isLoaded: false
-                // })
+                this.setState({isLoaded : false});
 
-                console.log("TCL: KnowledgeBase -> saveNewQuestions -> add", add)
-                console.log("TCL: KBHome -> saveNewQuestions -> update", update)
-                console.log("TCL: KBHome -> saveNewQuestions -> deleteArray", deleteArray)
 
-                const req = {
+                // ? Remove Unnecesary keys from body request
+                const newUpdateValues = update.qnaList.map((updateItem) => {
+                console.log("TCL: KBHome -> saveNewQuestions -> updateItem", updateItem)
+                     // ? Remove Extra Props from Response
+                     updateItem.metadata && delete updateItem.metadata;
+                     updateItem.changeStatus && delete updateItem.changeStatus;
+                     updateItem.alternateQuestionClusters && delete updateItem.alternateQuestionClusters;
+                     updateItem.alternateQuestions && delete updateItem.alternateQuestions;
+                     updateItem.kbId && delete updateItem.kbId;
+ 
+                     // ? Remove Questions and Context
+
+                     if(updateItem.questions && Array.isArray(updateItem.questions)) {
+                        let newQuestions = {
+                            'add' : updateItem.questions.add ? updateItem.questions.add : [],
+                            'delete' : updateItem.questions.delete ? updateItem.questions.delete : []
+                        }
+
+                        updateItem.questions = newQuestions;
+                     }
+
+                     if(updateItem.context) {
+                        if (!updateItem.context.promptsToAdd && !updateItem.context.promptsToDelete) 
+                            delete updateItem.context
+                    }
+                    return updateItem;
+
+                })
+                const reqData = {
 
                     'add': add,
+                    'delete': deleteArray,
                     'update': {
-                        'name': 'New KB Name',
-                        update
-                    },
-                    'delete': deleteArray
+                        'qnaList' : newUpdateValues
+                    }
                 };
+                console.log("TCL: KBHome -> saveNewQuestions -> reqData", reqData)
 
 
-                console.log("TCL: KnowledgeBase -> saveNewQuestions -> req", req)
+                console.log("TCL: KBHome -> saveNewQuestions -> reqData", JSON.stringify(reqData))
+
+                try {
+                    const updateKBPromise = await axios.post(Endpoints.getBaseData, reqData);
+                    const updateKBResponse = await updateKBPromise.data;
 
 
-                // try {
-                //     const updateKBPromise = await axios.post(Endpoints.getBaseData, req);
-                //     const updateKBResponse = await updateKBPromise.data;
+
+                    console.log("TCL: KnowledgeBase -> saveNewQuestions -> updateKBResponse", updateKBResponse);
+
+                    const publishPromise = await this.publishKB();
+                    const publishData = await publishPromise.data;
+
+                    console.log("TCL: KnowledgeBase -> saveNewQuestions -> publishData", publishData)
+
+                    updateKBResponse && this.createSuccessAlert('Kwnoledge Base Updated')
+
+                }
+                catch (error) {
+                    console.log("TCL: KnowledgeBase -> saveNewQuestions -> error", error)
+                    this.createErrorAlert('Error updatig Knowledge Base')
+                }
 
 
+                // ? Refetch Data
+                const qnaQuestionsPromise = await this.loadQnAQuestions();
+                const qnaQuestionsData = await qnaQuestionsPromise.data.qnaDocuments;
 
-                //     console.log("TCL: KnowledgeBase -> saveNewQuestions -> updateKBResponse", updateKBResponse);
-
-
-                //     this.setState({
-                //         addNewQuestion: false,
-                //         add: { 'qnaList': [] },
-                //         delete: { 'ids': [] },
-                //     })
-
-                //     const publishPromise = await this.publishKB();
-                //     const publishData = await publishPromise.data;
-
-                //     const qnaQuestionsPromise = await this.loadQnAQuestions();
-                //     const qnaQuestionsData = await qnaQuestionsPromise.data;
-
-                //     this.setState({
-                //         qnaData: qnaQuestionsData,
-                //         isLoaded: true
-                //     })
-
-
-                //     console.log("TCL: KnowledgeBase -> saveNewQuestions -> publishData", publishData)
-
-                //     updateKBResponse && this.createSuccessAlert('Kwnoledge Base Updated')
-                // }
-                // catch (error) {
-                //     console.log("TCL: KnowledgeBase -> saveNewQuestions -> error", error)
-                //     this.createErrorAlert('Error updatig Knowledge Base')
-                // }
+                this.setState({
+                    qnaData: qnaQuestionsData,
+                    addNewQuestion: false,
+                    add: { 'qnaList': [] },
+                    update: { 'qnaList': [] },
+                    delete: { 'ids': [] },
+                    isLoaded: true
+                })
 
             }
 
@@ -229,7 +248,8 @@
             // ?--------------------------------------
             // ? Add New Question 
             // ?--------------------------------------
-            onClickAddNewQuestion = () => {
+            onClickAddNewQuestion = (sourceClicked) => {
+                console.log("TCL: KBHome -> onClickAddNewQuestion -> sourceClicked", sourceClicked)
                 this.setState({
                     addNewQuestion: true,
                     sourceToAdd : 'Editorial'
@@ -240,7 +260,6 @@
             // ?--------------------------------------
             // ? Cancel New Questions to Add
             // ?--------------------------------------?
-
             hideNewQuestion = () => {
                 const { add } = this.state;
                 add.qnaList = []
@@ -260,7 +279,6 @@
             //? Retrieve New Question
             //? --------------------------------------
             saveQuestionPair = (question) => {
-                console.log("TCL: KBHome -> saveQuestionPair -> question", question)
                 const { add } = this.state;
                 console.log("TCL: KBHome -> saveQuestionPair -> add", add)
 
@@ -293,6 +311,9 @@
                 let newQnaDataItem = qnaList.find((qnaItem) => { return qnaItem.localID === itemID })
                 
                     newQnaDataItem.answer = newAnswer;
+                    console.log("TCL: KBHome -> updateNewAnswerValue -> newQnaDataItem", newQnaDataItem)
+
+                
 
                 if (!qnaList || qnaList.length <= 0) {
 
@@ -328,7 +349,7 @@
                         else {
                             // ? Add New item to the list
 
-                            console.log("TCL: KBHome -> updateQnaAnswer -> qnaListItem", qnaListItem)
+                            
                     
                             addedIds.push(itemID)
 
@@ -341,7 +362,7 @@
 
 
                     let newUpdateList = Object.assign({}, add, { qnaList: newQnaAddList })
-                    console.log("TCL: KBHome -> updateQnaAnswer -> newUpdateList", newUpdateList)
+                    console.log("TCL: KBHome -> updateNewAnswerValue -> newUpdateList", newUpdateList)
                     
 
                     this.setState({ update: { qnaList: newQnaAddList } })
@@ -375,15 +396,18 @@
 
             // ?--------------------------------------
             // ? Update QnA Item Answer
+            // ? Item FROM API
             // ?--------------------------------------
             updateQnaAnswer = (itemID, newAnswer) => {
                 const {qnaData, update} = this.state;
                 const {qnaList} = update;
-
+                
                 // ? Update Answer on the item to use
                 let newQnaDataItem = qnaData.find((qnaItem) => { return qnaItem.id === itemID })
-                    newQnaDataItem.answer = newAnswer;
+         
+                    console.log("TCL: KBHome -> updateQnaAnswer -> newQnaDataItem", newQnaDataItem)
 
+                // ? Empty List
                 if (!qnaList || qnaList.length <= 0) {
 
                     // ? Add the item to the update array
@@ -392,24 +416,26 @@
 
 
                     console.log("TCL: KBHome -> updateQnaAnswer -> newUpdateList", newUpdateList)
-             
+            
 
 
                     this.setState({ update: newUpdateList })
                 }
-
+                // ? List With Items Already on it
                 else {
 
-                    console.log("TCL: KBHome -> updateQnaDataQuestions -> this.state", this.state)
+                    
 
                     // ? Check if the Item is in the array and updated it
                     let newQnaUpdateList = qnaList;
-                    console.log("TCL: KBHome -> updateQnaDataQuestions -> newQnaUpdateList", newQnaUpdateList)
+                    console.log("TCL: KBHome -> updateQnaAnswer -> newQnaUpdateList", newQnaUpdateList)
+                    
                     let addedIds = qnaList.map(qnaItem => qnaItem.id);
 
 
                     newQnaUpdateList.forEach((qnaListItem) => {
 
+                       
                         // ? Update the questions data
                         if ((addedIds.includes(itemID))) {
                         
@@ -449,7 +475,8 @@
 
             // ?--------------------------------------
             // ? Update questions Data for 
-            // ? For each answer    
+            // ? For each answer That Comes From the 
+            // ? API
             // ?--------------------------------------
             updateQnaDataQuestions = (newQnaDataItem, action) => {
 
@@ -466,9 +493,7 @@
 
                 let questionToEdit = qnaData.find((qnaItem) => { return qnaItem.id === idToSearch })
 
-                console.log("TCL: KBHome -> updateQnaDataQuestions -> questionToEdit", questionToEdit)
-
-
+                // ? No items in the List
                 if (!qnaList || qnaList.length <= 0) {
 
                     if (action === 'addQuestions')
@@ -481,43 +506,38 @@
 
                     else if (action === 'updateQuestions') {
                         const { questionToReplace } = newQnaDataItem;
+                            questionToEdit.questions = {};
 
+                            questionToEdit.questions.add = [newQnaDataItem.newQuestionValue];
 
-                        console.log("TCL: KBHome -> updateQnaDataQuestions -> questionToReplace", questionToReplace)
-                     
-                        const newQuestionArray = this.compareQuestionsArray(questionToEdit, newQnaDataItem)
-                            
-                        console.log("TCL: KBHome -> updateQnaDataQuestions -> newQuestionArray", newQuestionArray)
-
-
-                        questionToEdit.questions = newQuestionArray;
+                            questionToEdit.questions.delete = [questionToReplace];
                         
                     }
 
-                    // else {
-                    //     // ? Edit Current Questions, spread the 
-                    //     questionToEdit = newQnaDataItem;
-                    //     console.log("TCL: KBHome -> updateQnaDataQuestions -> newQnaDataItem", newQnaDataItem);
-
-                    // }
 
                     console.log("TCL: KBHome -> updateQnaDataQuestions -> questionToEdit", questionToEdit)
 
 
                     //? Validate that there is a question beign updated
                     if (questionToEdit) {
+                        
+        
+                        questionToEdit.questions = {
+                            'add' :  questionToEdit.questions.add ? questionToEdit.questions.add: [],
+                            'delete' : questionToEdit.questions.delete ? questionToEdit.questions.delete : []
+                        }
 
                         newUpdateList = Object.assign({}, update, { qnaList: [questionToEdit] })
                         console.log("TCL: KBHome -> updateQnaDataQuestions -> newUpdateList", newUpdateList)
 
-
+                    
                         this.setState({ update: newUpdateList })
-                        // this.setState({ update: {newUpdateList} }, console.log('qnaList on empty', this.state.update))
+                        
                     }
-
 
                 }
 
+                // ? List already created
                 else {
 
                     console.log("TCL: KBHome -> updateQnaDataQuestions -> this.state", this.state)
@@ -550,7 +570,7 @@
                                         ? questionToEdit.questions.add.push(newQnaDataItem.newQuestion)
                                         : questionToEdit.questions.add = [newQnaDataItem.newQuestion];
 
-
+                
                                     qnaListItem = Object.assign({}, questionToEdit)
 
 
@@ -559,12 +579,14 @@
                                     // ? Store questions on the delete array
 
                                     console.log("TCL: KBHome -> updateQnaDataQuestions -> newQnaDataItem", newQnaDataItem)
+                                    console.log("TCL: KBHome -> updateQnaDataQuestions -> questionToEdit", questionToEdit)
 
                                     // ? If the questions exists on the original questions array, delete both
                                     // ? Otherwise just removeit from the delete array
 
                                     // ? the question comes from the DB
-                                    if (questionToEdit.questions.includes(newQnaDataItem.question) === true) {
+                                    if (Array.isArray(questionToEdit.questions) && questionToEdit.questions.includes(newQnaDataItem.question) === true) {
+                                        
                                         (questionToEdit.questions.delete && Array.isArray(questionToEdit.questions.delete))
                                             ? questionToEdit.questions.delete.push(newQnaDataItem.question)
                                             : questionToEdit.questions.delete = [newQnaDataItem.question];
@@ -576,27 +598,36 @@
                                         questionToEdit.questions.add = add.filter((addItem) => addItem !== newQnaDataItem.question)
                                     }
 
-                                    else {
-                                        return;
+                                    // ? Add The question the delete array
+                                    else if (Array.isArray(questionToEdit.questions.delete)) {
+                                        questionToEdit.questions.delete.push(newQnaDataItem.question)
                                     }
-
-
-                                    // (questionToEdit.questions.delete && Array.isArray(questionToEdit.questions.delete))
-                                    //     ? questionToEdit.questions.delete.push(newQnaDataItem.question)
-                                    //     : questionToEdit.questions.delete = [newQnaDataItem.question];
-
-
+                                    else {
+                                        return
+                                    }
 
                                     qnaListItem = Object.assign({}, questionToEdit)
 
                                 }
+                                // ? Update Answer
+                                // ? DELETE  Current answer and ADD new one
                                 else if (action === 'updateQuestions') {
-                                    const { questionToReplace } = newQnaDataItem;
+                                    const { questionToReplace, newQuestionValue } = newQnaDataItem;
                                     console.log("TCL: KBHome -> updateQnaDataQuestions -> questionToReplace", questionToReplace)
                                     console.log("TCL: KBHome -> updateQnaDataQuestions -> newQnaDataItem", newQnaDataItem)
 
-                                    const newQuestionArray = this.compareQuestionsArray(questionToEdit, newQnaDataItem)
-                                    questionToEdit.questions = newQuestionArray;
+
+                                    let originalQuestions = [...questionToEdit.questions];
+                                    questionToEdit.questions = {};
+
+                                    questionToEdit.questions.add = [newQuestionValue];
+                                    questionToEdit.questions.delete = [questionToReplace];
+                                    questionToEdit.questions.originalQuestions = originalQuestions;
+                                    console.log("TCL: KBHome -> updateQnaDataQuestions -> questionToEdit", questionToEdit)
+                                    
+
+                                    // const newQuestionArray = this.compareQuestionsArray(questionToEdit, newQnaDataItem)
+                                    // questionToEdit.questions = newQuestionArray;
 
                                     qnaListItem = Object.assign({}, questionToEdit)
 
@@ -616,14 +647,19 @@
                         }
                         // ? Add New item to the list
                         else {
-                         
+                        
                             let newListItemtoAdd = null;
 
                             console.log("TCL: KBHome -> updateQnaDataQuestions -> questionToEdit", questionToEdit)
 
-                              // Check if edit, add or delete question
+                            // Check if edit, add or delete question
                                 if (action === 'addQuestions') {
                                     // ? Store questions on the Add key
+
+                                    let originalQuestions = [...questionToEdit.questions];
+                                    console.log("TCL: KBHome -> updateQnaDataQuestions -> originalQuestions", originalQuestions)
+                                    questionToEdit.questions.originalQuestions = originalQuestions;
+                                    console.log("TCL: KBHome -> updateQnaDataQuestions -> questionToEdit", questionToEdit)
 
 
                                     (questionToEdit.questions.add && Array.isArray(questionToEdit.questions.add))
@@ -644,7 +680,7 @@
                                     // ? Otherwise just removeit from the delete array
 
                                     // ? the question comes from the DB
-                                    if (questionToEdit.questions.includes(newQnaDataItem.question) === true) {
+                                    if (Array.isArray(questionToEdit.questions) && questionToEdit.questions.includes(newQnaDataItem.question) === true) {
                                         (questionToEdit.questions.delete && Array.isArray(questionToEdit.questions.delete))
                                             ? questionToEdit.questions.delete.push(newQnaDataItem.question)
                                             : questionToEdit.questions.delete = [newQnaDataItem.question];
@@ -656,6 +692,11 @@
                                         questionToEdit.questions.add = add.filter((addItem) => addItem !== newQnaDataItem.question)
                                     }
 
+                                     // ? Add The question the delete array
+                                    else if (Array.isArray(questionToEdit.questions.delete)) {
+                                        questionToEdit.questions.delete.push(newQnaDataItem.question)
+                                    }
+
                                     else {
                                         return;
                                     }
@@ -664,14 +705,22 @@
 
                                 }
                                 else if (action === 'updateQuestions') {
-                                    const { questionToReplace } = newQnaDataItem;
-                                    console.log("TCL: KBHome -> updateQnaDataQuestions -> questionToReplace", questionToReplace)
-                                    console.log("TCL: KBHome -> updateQnaDataQuestions -> newQnaDataItem", newQnaDataItem)
+                                    
+                                    const { questionToReplace, newQuestionValue } = newQnaDataItem;
+                                    let originalQuestions = [...questionToEdit.questions];
+                                    questionToEdit.questions = {};
+                                    questionToEdit.questions.add = [newQuestionValue];
+                                    questionToEdit.questions.delete = [questionToReplace];
+                                    questionToEdit.questions.originalQuestions = originalQuestions;
 
-                                    const newQuestionArray = this.compareQuestionsArray(questionToEdit, newQnaDataItem)
-                                    questionToEdit.questions = newQuestionArray;
+                                    
+                                    console.log("TCL: KBHome -> updateQnaDataQuestions -> questionToEdit", questionToEdit)
 
+
+                                 
                                     newListItemtoAdd = Object.assign({}, questionToEdit)
+
+                                   
 
                                 }
 
@@ -697,14 +746,6 @@
 
 
                 }
-
-
-
-                
-
-
-
-
 
             }
 
@@ -815,7 +856,7 @@
 
             // ?--------------------------------------
             // ? Update Qna Data Page after each
-            // ? QnA Item Action
+            // ? QnA Item Action Items From API
             // ?--------------------------------------
             updateQnaData = (newQnaDataItem, action, followUpDataToRemove = null) => {
 
@@ -838,11 +879,12 @@
                 let newUpdateList = []
 
                 if (!qnaList || qnaList.length <= 0) {
+
                     newUpdateList = Object.assign({}, update, { qnaList: [newQnaDataItem] })
                     console.log("TCL: KBHome -> updateQnaData -> newUpdateList", newUpdateList)
                     removedFollowUpsIds = { questionID: newQnaDataItem.id, followUpRemoved: newQnaDataItem.context.promptsToDelete[0] }
+
                     this.setState({ update: newUpdateList })
-                    console.log("TCL: KBHome -> updateQnaData -> removedFollowUpsIds", removedFollowUpsIds)
                 }
 
 
@@ -856,8 +898,7 @@
 
                     qnaList.forEach((qnaListItem, index) => {
 
-
-                        // addedIds.push(qnaListItem.id)
+                     
 
                         // ? Update the Cotext Prop if theres a new folow up on the same question
                         if (addedIds.includes(newQnaDataItem.id)) {
@@ -946,93 +987,154 @@
             }
 
 
+            
+
+
             // ?--------------------------------------
             // ? Update Qna Data Page after each
             // ? QnA Item Action
-            // ? For New Questions with ID 0
             // ?--------------------------------------
             updateQnaDataPromptsNewQuestions = (newQnaDataItem, action, followUpDataToRemove = null) => {
-                console.log("TCL: KBHome -> updateQnaDataPromptsNewQuestions -> action", action)
+
                 console.log("TCL: KBHome -> updateQnaDataPromptsNewQuestions -> newQnaDataItem", newQnaDataItem)
-
-                const {add} = this.state;
-                const {qnaList} = add;
-
-                let newQuestionID = newQnaDataItem.id ? newQnaDataItem.id : newQnaDataItem.questionID;
-
-                const itemToLook = (newQnaDataItem.localID && newQuestionID === 0) ? newQnaDataItem.localID : newQuestionID;
-
-                // ? Check if the item to add is already on the array
-                // ? Since all the new questions have the same ID(0), filter by localID
-                if(qnaList.length > 0) {
-                    const newQnaList = qnaList.map((qnaItem) => {
-                        console.log("TCL: KBHome -> updateQnaDataPromptsNewQuestions -> qnaItem", qnaItem)
-                        if(qnaItem.localID === itemToLook) {
-                            
-                          switch(action)  {
-                                case 'addQuestions' : 
-
-                                        console.log("TCL: KBHome -> updateQnaDataPromptsNewQuestions -> qnaItem.questions", qnaItem.questions)
-                                        qnaItem.questions.push(newQnaDataItem.newQuestion)
-                                        
-                                        return qnaItem;
-                                        break;
-
-                                case 'updateQuestions' : 
-                                        const {questionToReplace, newQuestionValue} = newQnaDataItem;
-                                        if(qnaItem.questions.includes(questionToReplace) === true)
-                                            qnaItem.questions[qnaItem.questions.indexOf(questionToReplace)] = newQuestionValue;
-                                            
-                                        console.log("TCL: KBHome -> updateQnaDataPromptsNewQuestions -> qnaItem", qnaItem)
-                                        return qnaItem;
-                                        break;
-                                        
-                                case 'removeQuestions':
-
-                                        let newQnaItemQuestions = qnaItem.questions.filter((question) => {
-                                            console.log("TCL: KBHome -> updateQnaDataPromptsNewQuestions -> question", question)
-                                            return question !== newQnaDataItem.question
-                                        });
-                                        
-                                            console.log("TCL: KBHome -> updateQnaDataPromptsNewQuestions -> newQnaItemQuestions", newQnaItemQuestions)
-
-                                        qnaItem.questions = newQnaItemQuestions;
-                                        return qnaItem;
-
-                                        break;
-
-
-                                default : return qnaItem;
-
-
-                           
-                                
-                            }
-
-                            
-                            
-                        }
-                    })
-                    
-
-
-                   
-                    let newAddList = Object.assign({}, add, { qnaList: newQnaList })
-                    console.log("TCL: KBHome -> updateQnaDataPromptsNewQuestions -> newAddList", newAddList)
-                    
-
-                    this.setState({ add: newAddList })
-
-
-
-                    
-                }
-                
-
+                // ? Update KB Data
+                const { add } = this.state;
+                const { qnaList } = add;
+                console.log("TCL: KBHome -> updateQnaDataPromptsNewQuestions -> qnaList", qnaList)
+                let removedFollowUpsIds = [];
 
                
-            
-            
+
+                // ? Add Follow Ups and update data content
+
+                let newAddList = []
+
+                if (!qnaList || qnaList.length <= 0) {
+
+                    newAddList = Object.assign({}, add, { qnaList: [newQnaDataItem] })
+                    console.log("TCL: KBHome -> updateQnaDataPromptsNewQuestions -> newAddList", newAddList)
+
+                    removedFollowUpsIds = { questionID: newQnaDataItem.id, followUpRemoved: newQnaDataItem.context.promptsToDelete[0] }
+
+                    this.setState({ add: newAddList })
+                    console.log("TCL: KBHome -> updateQnaDataPromptsNewQuestions -> removedFollowUpsIds", removedFollowUpsIds)
+                }
+
+
+                else {
+
+                    // ? Check if the Item is in the array and updated it
+                    let newQnaUpdateList = [];
+
+                    let addedIds = qnaList.map(qnaItem => qnaItem.localID);
+                    console.log("TCL: KBHome -> updateQnaDataPromptsNewQuestions -> addedIds", addedIds)
+
+                    console.log("TCL: KBHome -> updateQnaDataPromptsNewQuestions -> removedFollowUpsIds", removedFollowUpsIds)
+
+                    qnaList.forEach((qnaListItem, index) => {
+
+
+                        // addedIds.push(qnaListItem.id)
+
+                        // ? Update the Cotext Prop if theres a new folow up on the same question
+                        if (addedIds.includes(newQnaDataItem.localID)) {
+
+                            if (newQnaDataItem.localID === qnaListItem.localID) {
+
+                                console.log("TCL: KBHome -> updateQnaDataPromptsNewQuestions -> qnaListItem", qnaListItem)
+
+
+                                console.log("TCL: KBHome -> updateQnaDataPromptsNewQuestions -> newQnaUpdateList[index]", newQnaUpdateList[index])
+
+                                // ? Get New Item Context Values
+                                const { context } = newQnaDataItem;
+                                const { promptsToAdd, promptsToDelete, prompts } = context;
+                                console.log("TCL: KBHome -> updateQnaDataPromptsNewQuestions -> promptsToDelete", promptsToDelete)
+
+
+                                const currentItemContext = qnaListItem.context || {};
+                                let hasContext =  currentItemContext.length > 0 ? true : false 
+                                const currentItemPrompts = currentItemContext ? currentItemContext.promptsToAdd : [] ;
+
+                                // ? Filter to get new Prompt Questions for the current answer
+                                const newPromptsToAdd = this.validatePromptToAdd(currentItemPrompts, promptsToAdd);
+                                let newPromptsToDelete = [];
+                                newQnaDataItem.context.promptsToAdd =  newPromptsToAdd;
+
+                                console.log("TCL: KBHome -> updateQnaDataPromptsNewQuestions -> newPromptsToDelete", newPromptsToDelete)
+
+                                console.log("TCL: KBHome -> updateQnaDataPromptsNewQuestions -> newPromptsToAdd", newPromptsToAdd)
+
+
+
+                                // ? Update Item Context Props
+                                if(hasContext)
+                                    qnaListItem.context.promptsToAdd = newPromptsToAdd;
+                                else
+                                    qnaListItem = newQnaDataItem;
+                                    
+                                    // qnaListItem = Object.assign({}, qnaListItem, {'context' : {promptsToAdd : newPromptsToAdd}})
+                                    
+                                    console.log("TCL: KBHome -> updateQnaDataPromptsNewQuestions -> newQnaDataItem", newQnaDataItem)
+                                    console.log("TCL: KBHome -> updateQnaDataPromptsNewQuestions -> qnaListItem", qnaListItem)
+
+                                    newQnaUpdateList.push(qnaListItem)
+                                    
+                                if (action === 'removeFollowUp') {
+
+
+                                    // TODO : Set Diff between local and API Promopts TO REMOVE
+                                    if (prompts.length > 0 || prompts.includes()) {
+                                        newPromptsToDelete = this.validatePromptToDelete(qnaListItem.context.promptsToDelete, promptsToDelete, addedIds)
+                                        qnaListItem.context.promptsToDelete = newPromptsToDelete;
+                                    }
+
+                                    else {
+                                        newPromptsToDelete = this.removePrompsToAdd(newQnaDataItem, qnaListItem.context.promptsToAdd, followUpDataToRemove);
+
+                                        // ? Update Item Context Props
+                                        qnaListItem.context.promptsToAdd = newPromptsToDelete;
+
+                                    }
+
+                                    newQnaUpdateList.push(qnaListItem)
+                                }
+
+
+
+
+
+                            }
+
+
+                        }
+
+                        // ? Add follow up to a new  question
+                        else {
+
+                        
+
+                            if (!addedIds.includes(newQnaDataItem.id)) {
+                                console.log("TCL: KBHome -> updateQnaData -> newQnaDataItem", newQnaDataItem)
+                                newQnaUpdateList.push(newQnaDataItem)
+
+                                addedIds.push(newQnaDataItem.id)
+                            }
+
+
+                        }
+
+                    })
+
+                    console.log("TCL: KBHome -> updateQnaData -> newQnaUpdateList", newQnaUpdateList)
+
+                    newAddList = Object.assign({}, add, { qnaList: newQnaUpdateList })
+                    console.log("TCL: KBHome -> updateQnaData -> newAddList", newAddList)
+
+                    this.setState({ add: { qnaList: newQnaUpdateList } })
+
+
+                }
 
             }
 
@@ -1054,6 +1156,9 @@
                 let currentPromptsCopy = currentArrayPrompt;
                 // ? Iterate both arrays to compare each item
                 newArrayPrompt.forEach((newPromptItem, index) => {
+
+                    // ? Remove the qnaId Prop of the Object, otherwise it will create a new Qna Record
+                    // newPromptItem.qnaId && delete newPromptItem.qnaId ;
 
                     if (!currentPromptTexts.includes(newPromptItem.displayText)) {
                         currentPromptsCopy.push(newPromptItem)
@@ -1186,14 +1291,14 @@
                     <div className="bot-questionsContainer">
 
                         <QnaContainer 
-                            updateQnaItemData = {this.updateQnaDataPromptsNewQuestions}
+                            updateQnaItemData = {this.updateQnaDataNewQuestions}
+                            updateQnaDataPromptsNewQuestions = {this.updateQnaDataPromptsNewQuestions}
                             qnaData={questionsData.qnaList} 
                             updateAnswer = {this.updateNewAnswerValue}/>
-
-
                     </div>
                 )
             }
+
 
 
 
@@ -1203,6 +1308,7 @@
             renderKBHome() {
 
                 const { isLoaded, qnaData, qnaSources, addNewQuestion, add } = this.state;
+                console.log("TCL: KBHome -> renderKBHome -> qnaSources", qnaSources)
                 console.log("TCL: KBHome -> renderKBHome -> qnaData", qnaData)
                 const deleteArray = this.state.delete;
                 let showSaveButton = false;
@@ -1221,7 +1327,7 @@
                         <div className="container-fluid">
                             <div className="row bot-headerContainer">
                                 <div className="col-md-4">
-                                    <h1> My Knowledge Base   </h1>
+                                    <h1> Flex QnA Maker   </h1>
                                 </div>
                             </div>
 
@@ -1236,13 +1342,14 @@
                                             <QnAContextProvider qnaData={qnaData} >
                                                 <div className="bot-tableContainer">
                                                     {
+                                                        
                                                         qnaSources && qnaSources.map((source, index) => {
-
-
+                    
                                                             let currentSource = this.setQnaDataBySource(source)
 
 
                                                             let allowEdit = source === 'Editorial' ? true : false
+                                                            // let allowEdit =  true;
 
 
                                                             return (
@@ -1250,14 +1357,14 @@
                                                                     source={source}
                                                                     qnaData={currentSource}
                                                                     onRemoveItem={this.onRemoveItem}
-                                                                    key={`${source}-${index}`}
+                                                                    key= {`${source}-${index}`}
                                                                     updateQnaData={this.updateQnaData}
                                                                     updateQnaDataQuestions={this.updateQnaDataQuestions}
-                                                                    updateAnswer = {this.updateQnaAnswer}
-                                                                    allQnaData={qnaData}
+                                                                    updateAnswer= {this.updateQnaAnswer}
+                                                                    allQnaData= {qnaData}
                                                                     header={<TableHeader
                                                                         onClickAddNewQuestion={this.onClickAddNewQuestion}
-                                                                        saveNewQuestions={this.saveNewQuestions}
+                                                                        saveNewQuestions={ this.saveNewQuestions }
                                                                         saveQuestionPair={this.saveQuestionPair}
                                                                         showButtons={allowEdit}
                                                                         showSaveButton={showSaveButton}
@@ -1276,7 +1383,7 @@
                                                                     {
 
                                                                         //? Add New Pair Question
-                                                                        
+                                                                        // addNewQuestion && this.addNewQuestion()
                                                                         addNewQuestion && source === 'Editorial' && this.addNewQuestion()
                                                                     }
 
@@ -1313,10 +1420,6 @@
                 return this.renderKBHome()
             }
     }
-// -------------------------------------- 
-// Define PropTypes 
-// -------------------------------------- 
-
 
 
 // --------------------------------------

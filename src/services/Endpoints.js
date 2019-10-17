@@ -13,6 +13,8 @@
 
     const path = process.env.REACT_APP_API_PATH || process.env.REACT_APP_API_LOCAL_PATH
 
+    // const path = process.env.REACT_APP_API_LOCAL_PATH
+
 
 // --------------------------------------
 // Create Endpoints Object

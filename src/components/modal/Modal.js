@@ -53,7 +53,10 @@
 // Define PropTypes 
 // -------------------------------------- 
     Modal.propTypes = {
-        props: PropTypes
+        show: PropTypes.bool,
+        questionId :  PropTypes.number,
+        close : PropTypes.func,
+        children : PropTypes.any
     };
 
 

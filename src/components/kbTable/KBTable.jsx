@@ -309,7 +309,7 @@
                 console.log("TCL: KBTable -> renderAccordionSources -> alllowEdition", alllowEdition)
                 
                 return (
-                    currentQnAData.length > 0 && 
+                    // currentQnAData.length > 0 && 
                         <Accordion
                             id={source}
                             title={source}

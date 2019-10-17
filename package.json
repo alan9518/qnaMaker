@@ -11,6 +11,10 @@
     "@pnp/sp": "^1.3.5",
     "axios": "^0.18.0",
     "babel-polyfill": "^6.26.0",
+    "circular-json": "^0.5.9",
+    "fast-json-stringify": "^1.15.4",
+    "fast-stringify": "^2.0.0",
+    "flatted": "^2.0.1",
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
     "react-loader-spinner": "^3.1.4",
@@ -25,5 +29,6 @@
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
-  }
+  },
+  "homepage": "https://flextronics365.sharepoint.com/sites/cortex/qnaLegal"
 }

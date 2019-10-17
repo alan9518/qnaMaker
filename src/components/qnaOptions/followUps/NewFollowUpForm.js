@@ -55,7 +55,7 @@
 
                 <form className = "bot-newFollowForm" >
                     <div className="form-group">
-                        <label for="displayText">Display Text *</label>
+                        <label htmlFor="displayText">Display Text *</label>
                         <input 
                                 type="text" 
                                 className="form-control" 
@@ -69,7 +69,7 @@
                         
                     </div>
                     <div className="form-group">
-                        <label for="exampleInputPassword1">Link to answer *</label>
+                        <label htmlFor="exampleInputPassword1">Link to answer *</label>
                         <QuestionsFilter 
                                 questionId = {props.questionId}
                                 onAnswerClick = {setAnswerValue}
@@ -103,7 +103,8 @@
 // Define PropTypes 
 // -------------------------------------- 
     NewFollowUpForm.propTypes = {
-        props: PropTypes
+        questionId : PropTypes.number,
+        addNewFollowUp: PropTypes.func
     };
 
 

@@ -112,10 +112,16 @@
             arrow.innerHTML = iconClass;
             tabContent.classList.toggle('bot-active');
 
-            if (tabContent.style.maxHeight)
+            if (tabContent.style.maxHeight) {
                 tabContent.style.maxHeight = null;
-            else 
-                tabContent.style.maxHeight = (tabContent.scrollHeight + 450) + "px";
+                tabContent.style.paddingBottom = 0;
+            }
+                
+            else  {
+                tabContent.style.maxHeight = (tabContent.scrollHeight + 650) + "px";
+                tabContent.style.paddingBottom = "20px";
+            }
+                
          }
     
 

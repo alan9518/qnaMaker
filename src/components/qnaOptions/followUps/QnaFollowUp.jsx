@@ -101,8 +101,8 @@
                     let newFollowUpItem = {
                         "displayText": displayText,
                         "displayOrder": 0,
-                        "qna" : answer,
-                        "qnaId": 0
+                        "qna" : null,
+                        "qnaId": answer.id
                     }
 
                     const {questions} = this.state;
@@ -165,7 +165,7 @@
                     
 
                         {
-                            questions.length <= 0 && this.renderAddQuestionButton()
+                            questions && this.renderAddQuestionButton()
                         }
 
 
@@ -192,7 +192,7 @@
                         }
 
                         {  
-                            questions.length > 0 && 
+                            questions && questions.length > 0 && 
                             <div className="bot-followUpsContainer">
 
                                 <h6> Follow Up Questions  </h6>

@@ -15,7 +15,7 @@
 // Create Functional Component
 // --------------------------------------
     const QnaAnswer = (props) => {
-        const {answer, id, deleteItem, editAnswer, onChangeAnswer, onDoubleClick} = props;
+        const {answer, id, deleteItem, editAnswer, onChangeAnswer, onDoubleClick, allowEdtion} = props;
         // console.log("TCL: QnaAnswer -> props", props)
         
     
@@ -50,7 +50,7 @@
                         event-action="Delete question" 
                         event-category="Knowledgebase table" role="button" tabIndex="0">
 
-                        <i className="material-icons" onClick = {deleteItem} id = {id}> delete_outline</i>
+                        { allowEdtion && <i className="material-icons" onClick = {deleteItem} id = {id}> delete_outline</i>}
                     </span>
                 </span>
 

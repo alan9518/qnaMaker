@@ -20,7 +20,7 @@
             <div >
                 <nav className="navbar navbar-expand-lg navbar-dark  bot-dark">
                     <ProjectLink route = {`/`} >
-                        <span className="navbar-brand" href="#"> QnA Maker</span>
+                        <span className="navbar-brand" href="#">Flex QnA Maker</span>
                     </ProjectLink>
                     
                     <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">

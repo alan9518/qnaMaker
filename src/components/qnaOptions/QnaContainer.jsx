@@ -48,27 +48,26 @@
 
 
 
-            // --------------------------------------
-            // Remove Question From State
-            // --------------------------------------
-            removeQuestionArrayItem = (event)=> {
-                console.log("TCL: NewQnaQuestion -> removeQuestionArrayItem -> event", event)
-                console.log("TCL: NewQnaQuestion -> removeQuestionArrayItem -> event", event.target.id)
-                
-            }
-
+         
 
 
             // ?--------------------------------------
             // ? Update Qna Data 
             // ?--------------------------------------
 
-            updateQnaItemData =(updatedQnaItem, action, followUpDataToRemove = null) => {
+            updateQnaItemData = (updatedQnaItem, action, followUpDataToRemove = null) => {
                 // console.log("TCL: QnaContainer -> updateQnaItem -> id", id)
                 console.log("TCL: QnaContainer -> updateQnaItemData -> updatedQnaItem", updatedQnaItem)
                 this.props.updateQnaItemData(updatedQnaItem, action, followUpDataToRemove)
 
             }
+
+
+            updateQnaDataPromptsNewQuestions = (updatedQnaItem, action, followUpDataToRemove = null) => { 
+                console.log("TCL: QnaContainer -> updateQnaDataPromptsNewQuestions -> updatedQnaItem", updatedQnaItem)
+                this.props.updateQnaDataPromptsNewQuestions(updatedQnaItem, action, followUpDataToRemove);
+            }
+
 
 
 
@@ -116,6 +115,7 @@
                                             allQnaData = {this.props.allQnaData}
                                             updateQnaItemData = {this.updateQnaItemData.bind(this)}
                                             updatedQnaItemContextPrompts = {this.updatedQnaItemContextPrompts}
+                                            updateQnaDataPromptsNewQuestions = {this.updateQnaDataPromptsNewQuestions.bind(this)}
                                             updateAnswer = {this.updateAnswerData}
                                             allowEdition = {this.props.alllowEdition}
                                         />

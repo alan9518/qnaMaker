@@ -50,16 +50,34 @@
             // ? to locallty work
             // ?--------------------------------------
             componentDidMount () {
-                
+                let localQuestions = null;
+
+                //? Set the edited Question as new value after KB Updated
+                if(!Array.isArray(this.props.itemData.questions)) {
+                    
+                    console.log("TCL: QnaItem -> componentDidMount -> this.props.itemData.questions", this.props.itemData.questions)
+
+                     localQuestions = this.props.itemData.questions.add.map((question) => {
+                        return {
+                            question : question,
+                            editable : false
+                        }
+                    })
+
+                   
+                }
+                else {
+                    localQuestions = this.props.itemData.questions.map((question) => {
+                        return {
+                            question : question,
+                            editable : false
+                        }
+                    })
+                    
+                }
              
 
-                let localQuestions = this.props.itemData.questions.map((question) => {
-                    return {
-                        question : question,
-                        editable : false
-                    }
-                })
-                
+             
                 this.setState({
                     questions : localQuestions
                 })
@@ -104,6 +122,7 @@
                 // ? gets Focused
                 // ?--------------------------------------
                 onQuestionFocus (question,id, event) {
+                    console.log("TCL: QnaItem -> onQuestionFocus -> event", event)
                     event.target.style.width =  event.target.value.length + "ch";
                     this.setState({currentQuestion : question.question})
                 }
@@ -358,6 +377,21 @@
                 }
 
 
+                // ?--------------------------------------
+                // ? Exit New Question Input
+                // ?--------------------------------------
+                exitQuestionOnBlur = (itemId, event) => {
+                    console.log("TCL: exitQuestionOnBlur -> event", event)
+                    console.log("TCL: exitQuestionOnBlur -> itemId", itemId)
+                    const {value} =  event.target;
+
+                    if(value === '') {
+                        this.setState({ showNewQuestion: false})
+                        return ;
+                    }
+                        
+
+                }
 
 
                 // ?--------------------------------------
@@ -369,10 +403,11 @@
                     console.log("TCL: QnaItem -> updateFollowUpQuestions -> this.state", this.state)
                     console.log("TCL: QnaItem -> updateFollowUpQuestions -> followUpData", followUpData)
 
-                    const {context} =  this.props.itemData;
+                    const {context} =  this.props.itemData || {};
                     let newContextValue = {}
                     let promptsToDelete = [];
                     let promptsToAdd = [];
+
                     if(action === 'addFollowUp') 
                         promptsToAdd.push(followUpData);
 
@@ -391,10 +426,16 @@
 
 
                     console.log("TCL: QnaItem -> updateFollowUpQuestions -> newQnaItem", newQnaItem)
-                   
-                    this.props.updateQnaItemData(newQnaItem, action, followUpData);
 
-                    // this.props.updatedQnaItemContextPrompts(newQnaItem);
+                    
+                    if(newQnaItem.localID && newQnaItem.id === 0)
+                    // ? Update Prompts of question to Add
+                        this.props.updateQnaDataPromptsNewQuestions(newQnaItem, action, followUpData);
+                    else
+                    // ? Update Questions from Dta Source
+                        this.props.updateQnaItemData(newQnaItem, action, followUpData);
+
+                    
                     
 
                     
@@ -414,13 +455,14 @@
             // --------------------------------------
             renderNewQuestionInput(questionID) {
                 console.log("TCL: renderNewQuestionInput -> questionID", questionID)
+                
                 return (
                     <NewQuestionInput 
                         questionValue = {this.state.currentQuestion} 
                         resizeInput = {this.resizeQuestionContainer} 
                         index = {1}
                         onKeyPress={this.handleKeyPressQuestion.bind(this,questionID)}
-                        // onBlur = {this.onQuestionBlur.bind(this,questionID)}
+                        onBlur = {this.exitQuestionOnBlur.bind(this,questionID)}
                         onClick = {this.deleteNewQuestion}
                     />
 
@@ -502,28 +544,33 @@
             // --------------------------------------
             // Map Questions
             // --------------------------------------
-            renderQuestions(questionsData) {
+            renderQuestions(questionsData, allowEdition) {
                 
                 const {id,localID} = this.props.itemData;
                 let qnaItemID = localID ? localID : id;
+
+                if(!Array.isArray(questionsData)) {
+                    return null;
+                }
+                    
 
                 return questionsData && questionsData.map((question, index) => {
 
                     return (
                             <QnaQuestion 
                                 question={question.question} 
-                                onQuestionRemoved={this.removeQuestionArrayItem.bind(this,question, qnaItemID)} 
+                                onQuestionRemoved={allowEdition ===  true &&  this.removeQuestionArrayItem.bind(this,question, qnaItemID)} 
                                 key = {`question-${qnaItemID}-${index}`}
                                 id = {`question-${qnaItemID}-${index}`}
                                 name = {`question-${qnaItemID}-${index}`}
                                 onQuestionDoubleClick = {this.editExistingQuestion.bind(this,question, true, false)}
                                 onKeyPress = {this.handleKeyPressQuestionEdit.bind(this,question, false, true)}
-                                editQuestion = {question.editable}
-                                // onBlur = {this.editExistingQuestion.bind(this,question, false, true)}
+                                editQuestion = { allowEdition ===  true ?  question.editable : false}
+                                onBlur = {this.exitQuestionOnBlur.bind(this,question)}
                                 onFocus = {this.onQuestionFocus.bind(this,question, qnaItemID)}
                                 updateQuestion = {this.resizeQuestionContainer}
                                 newQuestionValue = {this.state.currentQuestion}
-                                allowEdition = {this.props.allowEdition}
+                                allowEdition = {allowEdition}
                             />
                         )
                 })
@@ -535,7 +582,9 @@
             // --------------------------------------
             renderQnaItem() {
                 const { showNewQuestion, questions, editAnswer, currentAnswer, questionsEmpty } = this.state
-                const { itemData, id, allowEdition } = this.props;
+                const { itemData, id, source } = this.props;
+                
+                let allowEdition =  source === 'Editorial' ?  true : false;
              
                 let borderClass = '';
                  
@@ -549,6 +598,7 @@
                 let rowContainerClass = `bot-qnaRow row ${borderClass}` 
                 
 
+
                 let qnaItemID = (itemData.localID && itemData.id === 0) ? itemData.localID : itemData.id;
 
                 if(itemData.localID)
@@ -561,7 +611,7 @@
 
                             <div className="col-md-6">
                                 <h5> Questions </h5>
-                                <h6> ID : {itemData.id} </h6>
+                                <h6> ID : {qnaItemID} </h6>
                                 {
                                     // ? Display Questions Array Empty Message
                                     questionsEmpty === true && <span style = {{color : 'red'}}> The questions set cant be empty   </span>
@@ -573,14 +623,14 @@
 
                                     {
                                         // ? Iterate & Render Questions
-                                        this.renderQuestions(questions)
+                                        this.renderQuestions(questions, allowEdition)
                                     }
 
                                     {
                                         // ? Add New Question to the Current Row
-                                        showNewQuestion && this.renderNewQuestionInput(itemData.localID)
+                                        showNewQuestion && this.renderNewQuestionInput(qnaItemID)
                                     }
-                                    <ActionButton id={itemData.id} icon={"add"} onClick={this.addQuestiontoRow} key = {itemData.id}/>
+                                   { allowEdition &&  <ActionButton id={itemData.id} icon={"add"} onClick={this.addQuestiontoRow} />}
                                 </div>
                             </div>
 
@@ -591,16 +641,18 @@
                                     id = {itemData.id} 
                                     key = {`ans-${itemData.id}`} 
                                     deleteItem = {this.onRemoveItem} 
-                                    editAnswer = {editAnswer} 
+                                    editAnswer = {allowEdition === true ? editAnswer : false} 
                                     onChangeAnswer = {this.onChangeAnswer}
                                     onDoubleClick = {this.enableEditAnswer}
                                     resizeInput = {this.resizeQuestionContainer} 
                                     onBlur = {this.onAnswerBlur.bind(this, qnaItemID)}
                                     onFocus = {this.onAnswerFocus.bind(this, currentAnswer)}
+                                    allowEdition = {allowEdition}
                                 />
+                                
                                 {
                                     // ? Render Follow Up Questions
-                                    <QnaFollowUp 
+                                    allowEdition === true && itemData.id !== 0 && <QnaFollowUp 
                                         followUpData = {itemData.context}  
                                         questionID = {itemData.id} 
                                         // key = {`followUp-${itemData.id}`}
